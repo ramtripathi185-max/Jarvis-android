@@ -13,6 +13,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.example.MainActivity
 import com.example.R
+import com.example.core.voice.entry.VoiceEntryActivity
 
 /**
  * Foreground Service ensuring compliant continuous microphone recording
@@ -38,19 +39,11 @@ class JarvisLiveAudioService : Service() {
         val notification = buildForegroundNotification()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                startForeground(
-                    NOTIFICATION_ID,
-                    notification,
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
-                )
-            } else {
-                startForeground(
-                    NOTIFICATION_ID,
-                    notification,
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
-                )
-            }
+            startForeground(
+                NOTIFICATION_ID,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
+            )
         } else {
             startForeground(NOTIFICATION_ID, notification)
         }
@@ -74,6 +67,7 @@ class JarvisLiveAudioService : Service() {
     }
 
     private fun buildForegroundNotification(): Notification {
+        // 1. Tapping notification body opens MainActivity
         val openAppIntent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
@@ -84,6 +78,18 @@ class JarvisLiveAudioService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        // 2. Action: Speak Now (Launches VoiceEntryActivity without full app navigation)
+        val voiceEntryIntent = Intent(this, VoiceEntryActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        val pendingVoiceEntryIntent = PendingIntent.getActivity(
+            this,
+            2,
+            voiceEntryIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // 3. Action: Disconnect / Standby
         val stopIntent = Intent(this, JarvisLiveAudioService::class.java).apply {
             action = ACTION_STOP
         }
@@ -95,10 +101,11 @@ class JarvisLiveAudioService : Service() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("J.A.R.V.I.S. Live Voice Active")
-            .setContentText("Bidirectional real-time audio channel streaming.")
+            .setContentTitle("J.A.R.V.I.S. Voice Link Active")
+            .setContentText("Online • Tap Speak to activate voice input.")
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentIntent(pendingOpenIntent)
+            .addAction(android.R.drawable.ic_btn_speak_now, "Speak", pendingVoiceEntryIntent)
             .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Disconnect", pendingStopIntent)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)

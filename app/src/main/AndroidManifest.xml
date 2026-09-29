@@ -32,6 +32,49 @@
             android:foregroundServiceType="microphone"
             android:exported="false" />
 
+        <!-- Quick Settings Tile for instant notification shade voice access -->
+        <service
+            android:name=".core.voice.service.JarvisTileService"
+            android:icon="@mipmap/ic_launcher"
+            android:label="JARVIS Voice"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <!-- Home-Screen Widget Provider -->
+        <receiver
+            android:name=".core.voice.widget.JarvisWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.action.WIDGET_MIC_CLICK" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/jarvis_widget_info" />
+        </receiver>
+
+        <!-- Quick Floating Voice Entry Activity -->
+        <activity
+            android:name=".core.voice.entry.VoiceEntryActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Jarvis.Translucent"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.ASSIST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VOICE_COMMAND" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

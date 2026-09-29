@@ -36,5 +36,13 @@ class ExampleUnitTest {
     assertTrue(states.contains(com.example.core.voice.live.LiveSessionState.SPEAKING))
     assertTrue(states.contains(com.example.core.voice.live.LiveSessionState.INTERRUPTED))
   }
+
+  @Test
+  fun wakeWordState_hasExpectedTransitions() {
+    val states = com.example.core.voice.wakeword.WakeWordState.values()
+    assertTrue(states.contains(com.example.core.voice.wakeword.WakeWordState.DISABLED))
+    assertTrue(states.contains(com.example.core.voice.wakeword.WakeWordState.ARMED_FOREGROUND))
+    assertTrue(states.contains(com.example.core.voice.wakeword.WakeWordState.TRIGGERED))
+  }
 }
 
