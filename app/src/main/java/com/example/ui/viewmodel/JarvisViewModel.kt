@@ -44,6 +44,8 @@ class JarvisViewModel(
     val pitch = preferences.pitch
     val autoSpeak = preferences.autoSpeak
     val customTone = preferences.customTone
+    val liveVoiceMode = preferences.liveVoiceMode
+    val liveVoiceName = preferences.liveVoiceName
 
     val isApiKeyConfigured: Boolean
         get() = engine.geminiService.isApiKeyConfigured
@@ -64,6 +66,8 @@ class JarvisViewModel(
         val current = assistantState.value
         if (current is AssistantState.Listening) {
             engine.stopVoiceListening()
+        } else if (current is AssistantState.Speaking) {
+            engine.voiceEngine.stopSpeaking()
         } else {
             if (!permissionManager.hasRecordAudioPermission()) {
                 onError("Microphone permission is required to listen.")
@@ -121,6 +125,14 @@ class JarvisViewModel(
 
     fun onCustomToneChanged(tone: String) {
         preferences.setCustomTone(tone)
+    }
+
+    fun onLiveVoiceModeChanged(enabled: Boolean) {
+        preferences.setLiveVoiceMode(enabled)
+    }
+
+    fun onLiveVoiceNameChanged(voiceName: String) {
+        preferences.setLiveVoiceName(voiceName)
     }
 
     fun testTtsVoice() {

@@ -28,5 +28,13 @@ class ExampleUnitTest {
     assertTrue(action.requiresConfirmation)
     assertEquals(ActionCategory.SYSTEM, action.category)
   }
+
+  @Test
+  fun liveSessionState_hasExpectedTransitions() {
+    val states = com.example.core.voice.live.LiveSessionState.values()
+    assertTrue(states.contains(com.example.core.voice.live.LiveSessionState.LISTENING))
+    assertTrue(states.contains(com.example.core.voice.live.LiveSessionState.SPEAKING))
+    assertTrue(states.contains(com.example.core.voice.live.LiveSessionState.INTERRUPTED))
+  }
 }
 

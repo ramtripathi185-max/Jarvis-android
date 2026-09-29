@@ -74,6 +74,7 @@ fun HudScreen(
     val permissionState by viewModel.permissionState.collectAsState()
     val currentModel by viewModel.selectedModel.collectAsState()
     val pendingAction by viewModel.pendingAction.collectAsState()
+    val isLiveVoice by viewModel.liveVoiceMode.collectAsState()
 
     val scrollState = rememberScrollState()
 
@@ -88,7 +89,8 @@ fun HudScreen(
         CyberHeader(
             assistantState = assistantState,
             isOnline = permissionState.isNetworkConnected,
-            currentModel = currentModel
+            currentModel = currentModel,
+            isLiveVoice = isLiveVoice
         )
 
         Spacer(modifier = Modifier.height(16.dp))

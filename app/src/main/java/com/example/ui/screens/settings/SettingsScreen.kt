@@ -79,6 +79,8 @@ fun SettingsScreen(
     val pitch by viewModel.pitch.collectAsState()
     val autoSpeak by viewModel.autoSpeak.collectAsState()
     val customTone by viewModel.customTone.collectAsState()
+    val liveVoiceMode by viewModel.liveVoiceMode.collectAsState()
+    val liveVoiceName by viewModel.liveVoiceName.collectAsState()
 
     val isApiKeyConfigured = viewModel.isApiKeyConfigured
 
@@ -281,8 +283,90 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // 3.5. Gemini Real-Time Live Voice Engine (Part 2A)
+        SettingsSectionHeader(icon = Icons.Default.Speed, title = "GEMINI REAL-TIME LIVE VOICE (PART 2A)")
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(14.dp),
+            colors = CardDefaults.cardColors(containerColor = CyberCardDark),
+            border = BorderStroke(1.dp, if (liveVoiceMode) CyberCyan.copy(alpha = 0.8f) else CyberBorder)
+        ) {
+            Column(modifier = Modifier.padding(14.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Real-Time Streaming Voice",
+                            color = TextPrimary,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "Low-latency bidirectional streaming with instant barge-in / interruption support",
+                            color = TextSecondary,
+                            fontSize = 11.sp,
+                            lineHeight = 15.sp
+                        )
+                    }
+                    Switch(
+                        checked = liveVoiceMode,
+                        onCheckedChange = { viewModel.onLiveVoiceModeChanged(it) },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = CyberDarkNavy,
+                            checkedTrackColor = CyberCyan
+                        )
+                    )
+                }
+
+                if (liveVoiceMode) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "Voice Character:",
+                        color = CyberCyan,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    val voiceCharacters = listOf("Puck", "Aoede", "Charon", "Fenrir", "Kore")
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        voiceCharacters.forEach { charName ->
+                            val isSelected = liveVoiceName == charName
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = if (isSelected) CyberCyan.copy(alpha = 0.2f) else CyberSurfaceDark,
+                                border = BorderStroke(
+                                    1.dp,
+                                    if (isSelected) CyberCyan else CyberBorder
+                                ),
+                                modifier = Modifier
+                                    .clickable { viewModel.onLiveVoiceNameChanged(charName) }
+                            ) {
+                                Text(
+                                    text = charName,
+                                    color = if (isSelected) CyberCyan else TextSecondary,
+                                    fontSize = 11.sp,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         // 4. Voice Engine / TTS Controls
-        SettingsSectionHeader(icon = Icons.Default.RecordVoiceOver, title = "SPEECH SYNTHESIS ENGINE")
+        SettingsSectionHeader(icon = Icons.Default.RecordVoiceOver, title = "FALLBACK SPEECH SYNTHESIS ENGINE")
         Spacer(modifier = Modifier.height(8.dp))
 
         Card(

@@ -8,6 +8,8 @@ import com.example.core.engine.AssistantEngine
 import com.example.core.engine.DefaultAssistantEngine
 import com.example.core.permissions.PermissionManager
 import com.example.core.voice.AndroidVoiceEngine
+import com.example.core.voice.live.LiveVoiceEngine
+import com.example.core.voice.VoiceEngine
 import com.example.data.db.JarvisDatabase
 import com.example.data.preferences.JarvisPreferences
 import com.example.data.service.GeminiServiceImpl
@@ -29,7 +31,10 @@ class JarvisApplication : Application() {
     lateinit var actionManager: ActionManager
         private set
 
-    lateinit var voiceEngine: AndroidVoiceEngine
+    lateinit var androidVoiceEngine: AndroidVoiceEngine
+        private set
+
+    lateinit var liveVoiceEngine: LiveVoiceEngine
         private set
 
     lateinit var geminiService: GeminiServiceImpl
@@ -49,12 +54,22 @@ class JarvisApplication : Application() {
         preferences = JarvisPreferences(this)
         permissionManager = PermissionManager(this)
         actionManager = ActionManager(this)
-        voiceEngine = AndroidVoiceEngine(this, preferences.language.value)
+
+        // Part 1 classic speech recognizer + TTS engine (used as reliable fallback)
+        androidVoiceEngine = AndroidVoiceEngine(this, preferences.language.value)
+
+        // Part 2A dedicated Gemini Live Real-Time Voice Engine
+        liveVoiceEngine = LiveVoiceEngine(
+            context = this,
+            fallbackVoiceEngine = androidVoiceEngine,
+            initialLanguage = preferences.language.value
+        )
+
         geminiService = GeminiServiceImpl()
         conversationManager = ConversationManager(conversationRepository)
 
         assistantEngine = DefaultAssistantEngine(
-            voiceEngine = voiceEngine,
+            voiceEngine = liveVoiceEngine,
             actionManager = actionManager,
             geminiService = geminiService,
             conversationManager = conversationManager,

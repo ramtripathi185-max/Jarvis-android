@@ -194,6 +194,17 @@ fun PermissionsScreen(
             testTag = "permission_item_network"
         )
 
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // 4. Foreground Audio Service (Part 2A)
+        PermissionItemCard(
+            title = "Foreground Audio Stream Service",
+            description = "Android 14+ compliant microphone service for continuous streaming.",
+            icon = Icons.Default.RecordVoiceOver,
+            isGranted = permissionState.hasAudioPermission,
+            testTag = "permission_item_foreground_audio"
+        )
+
         Spacer(modifier = Modifier.height(24.dp))
 
         // Future Permissions Roadmap

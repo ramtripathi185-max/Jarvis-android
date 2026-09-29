@@ -31,6 +31,12 @@ class JarvisPreferences(context: Context) {
     private val _customTone = MutableStateFlow(loadCustomTone())
     val customTone: StateFlow<String> = _customTone.asStateFlow()
 
+    private val _liveVoiceMode = MutableStateFlow(loadLiveVoiceMode())
+    val liveVoiceMode: StateFlow<Boolean> = _liveVoiceMode.asStateFlow()
+
+    private val _liveVoiceName = MutableStateFlow(loadLiveVoiceName())
+    val liveVoiceName: StateFlow<String> = _liveVoiceName.asStateFlow()
+
     private fun loadLanguage(): LanguageOption {
         val name = prefs.getString(KEY_LANGUAGE, LanguageOption.ENGLISH_INDIA.name)
         return try {
@@ -58,6 +64,14 @@ class JarvisPreferences(context: Context) {
 
     private fun loadCustomTone(): String {
         return prefs.getString(KEY_CUSTOM_TONE, "") ?: ""
+    }
+
+    private fun loadLiveVoiceMode(): Boolean {
+        return prefs.getBoolean(KEY_LIVE_VOICE_MODE, true)
+    }
+
+    private fun loadLiveVoiceName(): String {
+        return prefs.getString(KEY_LIVE_VOICE_NAME, "Puck") ?: "Puck"
     }
 
     fun setLanguage(option: LanguageOption) {
@@ -90,6 +104,16 @@ class JarvisPreferences(context: Context) {
         _customTone.value = tone
     }
 
+    fun setLiveVoiceMode(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_LIVE_VOICE_MODE, enabled).apply()
+        _liveVoiceMode.value = enabled
+    }
+
+    fun setLiveVoiceName(voiceName: String) {
+        prefs.edit().putString(KEY_LIVE_VOICE_NAME, voiceName).apply()
+        _liveVoiceName.value = voiceName
+    }
+
     companion object {
         private const val KEY_LANGUAGE = "key_language"
         private const val KEY_MODEL = "key_model"
@@ -97,5 +121,7 @@ class JarvisPreferences(context: Context) {
         private const val KEY_PITCH = "key_pitch"
         private const val KEY_AUTO_SPEAK = "key_auto_speak"
         private const val KEY_CUSTOM_TONE = "key_custom_tone"
+        private const val KEY_LIVE_VOICE_MODE = "key_live_voice_mode"
+        private const val KEY_LIVE_VOICE_NAME = "key_live_voice_name"
     }
 }

@@ -41,6 +41,7 @@ fun CyberHeader(
     assistantState: AssistantState,
     isOnline: Boolean,
     currentModel: String,
+    isLiveVoice: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -85,7 +86,7 @@ fun CyberHeader(
                         fontFamily = FontFamily.Monospace
                     )
                     Text(
-                        text = "MARK I • SECURE AI CORE",
+                        text = if (isLiveVoice) "MARK II • LIVE AUDIO STREAM" else "MARK I • SECURE AI CORE",
                         color = CyberCyan.copy(alpha = 0.7f),
                         fontSize = 9.sp,
                         fontWeight = FontWeight.Medium,
@@ -99,6 +100,24 @@ fun CyberHeader(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
+                // Live Stream indicator
+                if (isLiveVoice) {
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = CyberCyan.copy(alpha = 0.15f),
+                        border = BorderStroke(0.8.dp, CyberCyan.copy(alpha = 0.6f))
+                    ) {
+                        Text(
+                            text = "LIVE",
+                            color = CyberCyan,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            letterSpacing = 0.5.sp,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
+                        )
+                    }
+                }
+
                 // Model Tag
                 Surface(
                     shape = RoundedCornerShape(6.dp),

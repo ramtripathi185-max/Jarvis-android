@@ -1,12 +1,38 @@
-# JARVIS - Voice-First Personal AI Assistant (Part 1)
+# JARVIS - Voice-First Personal AI Assistant (Part 1 & Part 2A)
 
 JARVIS is a production-ready, voice-first personal AI assistant for Android powered by Google Gemini API, Jetpack Compose, Material 3, and a clean, modular architecture.
 
-This project delivers **Part 1: The Core Foundation**. It establishes the assistant architecture, futuristic HUD interface with animated circular voice reactor, speech recognition and synthesis engines, Gemini service layer, safety confirmation pipeline, action manager, and Room persistence.
+This project delivers **Part 1 (The Core Foundation)** and **Part 2A (Real-Time Live Voice Engine)**. It establishes the assistant architecture, futuristic HUD interface with animated circular voice reactor, low-latency Gemini Live WebSocket bidirectional audio streaming, instant voice barge-in (interruption), speech recognition fallback, safety confirmation pipeline, action manager, and Room persistence.
 
 ---
 
-## 🚀 Key Features in Part 1
+## 🚀 Key Features in Part 2A (Real-Time Voice Engine)
+
+1. **Dedicated Real-Time Live Voice Engine (`LiveVoiceEngine`):**
+   - Direct bidirectional streaming connection over OkHttp WebSocket to Gemini Multimodal Live API (`gemini-2.5-flash-native-audio-preview-12-2025`).
+   - Ultra-low latency voice interaction with native 24kHz audio playback via `AudioTrack`.
+   - Continuous audio streaming input via `AudioRecord` (16kHz, 16-bit PCM Mono).
+
+2. **Instant Interruption (Barge-in):**
+   - The user can interrupt JARVIS at any time while it is speaking!
+   - Instantaneous buffer flushing via `AudioOutputManager.flushAndStop()` triggered by local mic energy detection or server interruption signals.
+   - Smooth transition back to active listening without delays or audio artifacts.
+
+3. **Android Compliant Background Execution:**
+   - `JarvisLiveAudioService`: Foreground Service with `foregroundServiceType="microphone"`, adhering strictly to Android 14+ background execution policies.
+   - Ongoing system notification with one-tap disconnect capability.
+
+4. **Multi-Language Persona:**
+   - Native support for **Hindi**, **English**, and conversational **Hinglish**.
+   - Choice of prebuilt Gemini voices (`Puck`, `Aoede`, `Charon`, `Fenrir`, `Kore`).
+
+5. **Robust Fallback & Hybrid Support:**
+   - If real-time streaming is disabled or offline, automatically falls back to Android `SpeechRecognizer` + `TextToSpeech` without crashing.
+   - Text terminal conversation remains 100% accessible and synchronized.
+
+---
+
+## 🚀 Key Features in Part 1 (Foundation)
 
 1. **Futuristic Cybernetic HUD & Reactor:**
    - Custom animated circular voice indicator (`JarvisArcReactor`) with dynamic state transitions:
@@ -22,21 +48,14 @@ This project delivers **Part 1: The Core Foundation**. It establishes the assist
    - Robust networking with OkHttp (60s timeouts) and Retrofit.
    - Multi-turn conversation management with automatic token context budgeting.
    - Graceful offline detection, rate-limit handling, and clear error translation.
-   - Built to easily upgrade to Gemini Live / real-time bidirectional audio streaming in Part 2.
 
-3. **Voice Engine Foundation:**
-   - Pluggable `VoiceEngine` interface supporting Android `SpeechRecognizer` and `TextToSpeech`.
-   - Real-time RMS decibel measurement (0.0 to 1.0) feeding into the UI visualizer.
-   - Multi-language support: English (Global), English (India), Hindi (`hi-IN`), and conversational Hinglish.
-   - Adjustable speech rate and pitch controls.
-
-4. **Command & Safety Architecture:**
+3. **Command & Safety Architecture:**
    - `Action` interface with built-in intent parsing.
    - Part 1 actions: Date & Time, Battery status, and System diagnostics.
    - **Safety First Principle:** Sensitive operations cannot run silently. Requires explicit user authorization via interactive confirmation cards or voice response ("yes / authorize" vs "no / abort").
    - Clear extension hooks and architecture for Parts 2 through 5.
 
-5. **Local Persistence & Settings:**
+4. **Local Persistence & Settings:**
    - Room Database (`JarvisDatabase`) caching conversation history locally.
    - In-app configuration screen for language, model (`gemini-3.5-flash` vs `gemini-3.1-pro-preview`), speech synthesis tuning, and custom personality instructions.
 
