@@ -11,7 +11,9 @@ import androidx.core.content.ContextCompat
 data class PermissionState(
     val hasAudioPermission: Boolean,
     val isSpeechRecognitionAvailable: Boolean,
-    val isNetworkConnected: Boolean
+    val isNetworkConnected: Boolean,
+    val hasContactsPermission: Boolean = false,
+    val hasCallPhonePermission: Boolean = false
 ) {
     val isFullyOperational: Boolean
         get() = hasAudioPermission && isSpeechRecognitionAvailable && isNetworkConnected
@@ -26,6 +28,20 @@ class PermissionManager(private val context: Context) {
         return ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun hasContactsPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_CONTACTS
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun hasCallPhonePermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.CALL_PHONE
         ) == PackageManager.PERMISSION_GRANTED
     }
 
@@ -47,7 +63,9 @@ class PermissionManager(private val context: Context) {
         return PermissionState(
             hasAudioPermission = hasRecordAudioPermission(),
             isSpeechRecognitionAvailable = isSpeechRecognitionAvailable(),
-            isNetworkConnected = isNetworkConnected()
+            isNetworkConnected = isNetworkConnected(),
+            hasContactsPermission = hasContactsPermission(),
+            hasCallPhonePermission = hasCallPhonePermission()
         )
     }
 }

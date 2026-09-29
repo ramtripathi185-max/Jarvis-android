@@ -24,8 +24,10 @@ class ActionManager(private val context: Context) {
         registerAction(DiagnosticsAction())
         registerAction(SecuritySensitiveAction())
 
+        // Register Part 3A Phone Call Action
+        registerAction(PhoneCallAction())
+
         // Register modular extension hooks for future parts
-        registerAction(CallActionExtension())
         registerAction(WhatsAppActionExtension())
         registerAction(YouTubeActionExtension())
         registerAction(ReminderActionExtension())

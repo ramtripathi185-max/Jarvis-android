@@ -237,14 +237,22 @@ class DefaultAssistantEngine(
     }
 
     private fun isAffirmativeResponse(input: String): Boolean {
-        return input == "yes" || input == "yeah" || input == "sure" ||
-                input == "confirm" || input == "authorize" || input == "haan" ||
-                input == "theek hai" || input == "do it" || input == "proceed"
+        val lower = input.trim().lowercase(Locale.ROOT)
+        return lower == "yes" || lower == "yeah" || lower == "sure" ||
+                lower == "confirm" || lower == "authorize" || lower == "haan" ||
+                lower == "theek hai" || lower == "do it" || lower == "proceed" ||
+                lower == "call karo" || lower == "call lagao" || lower == "phone lagao" ||
+                lower == "phone karo" || lower == "dial karo" || lower == "karo" ||
+                lower == "lagao" || lower == "haan call karo" || lower.startsWith("yes ") ||
+                lower.startsWith("haan ")
     }
 
     private fun isNegativeResponse(input: String): Boolean {
-        return input == "no" || input == "nope" || input == "cancel" ||
-                input == "abort" || input == "stop" || input == "nahi" ||
-                input == "mat karo" || input == "don't"
+        val lower = input.trim().lowercase(Locale.ROOT)
+        return lower == "no" || lower == "nope" || lower == "cancel" ||
+                lower == "abort" || lower == "stop" || lower == "nahi" ||
+                lower == "mat karo" || lower == "mat lagao" || lower == "don't" ||
+                lower == "cancel karo" || lower == "call mat karo" || lower.startsWith("no ") ||
+                lower.startsWith("nahi ")
     }
 }
