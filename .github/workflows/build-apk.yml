@@ -1,4 +1,4 @@
-name: Build JARVIS APK FINAL
+name: Build JARVIS APK
 
 on:
   workflow_dispatch:
@@ -17,23 +17,19 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Fix Gradle Version to 9.3.1
+      - name: Setup Gradle 9.3.1
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 9.3.1
+
+      - name: Fix and Build
         run: |
-          find . -name "gradle-wrapper.properties" -exec sed -i "s/gradle-.*-bin.zip/gradle-9.3.1-bin.zip/g" {} \;
           DUMMY='{"project_info":{"project_number":"123","project_id":"jarvis-dummy","storage_bucket":"dummy.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:123:android:dummy","android_client_info":{"package_name":"com.jarvis.android"}},"oauth_client":[],"api_key":[{"current_key":"dummy"}]}]}'
-          find . -type d -name "app" | while read d; do echo "$DUMMY" > "$d/google-services.json" || true; done
-          mkdir -p ~/.android
-          keytool -genkey -v -keystore app/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US" || true
-          keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US" || true
-
-      - name: Build APK
-        run: |
-          GRADLEW=$(find . -name gradlew -type f | head -1)
-          echo "Found: $GRADLEW"
-          chmod +x $GRADLEW
-          cd $(dirname $GRADLEW)/..
-          ./gradlew assembleDebug --no-daemon -x lint --stacktrace
-
+          find . -type d -name app | while read d; do echo "$DUMMY" > "$d/google-services.json" || true; done
+          echo "$DUMMY" > app/google-services.json 2>/dev/null || true
+          find . -name "gradle-wrapper.properties" -exec sed -i "s/gradle-.*-bin.zip/gradle-9.3.1-bin.zip/g" {} \; || true
+          gradle assembleDebug --no-daemon -x lint --stacktrace
+          
       - name: Upload APK
         if: always()
         uses: actions/upload-artifact@v4
