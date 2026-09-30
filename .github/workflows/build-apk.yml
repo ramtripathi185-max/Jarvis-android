@@ -10,17 +10,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - uses: gradle/actions/setup-gradle@v4
-      
-      - name: Create keystore and google-services.json
+      - name: Create keystore and files
         run: |
           keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
           cp debug.keystore app/debug.keystore || true
           mkdir -p app
           echo '{"project_info":{"project_number":"1234567890","project_id":"jarvis-dummy","storage_bucket":"jarvis-dummy.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:1234567890:android:abc123","android_client_info":{"package_name":"com.aistudio.jarvis.kxaqvt"}},"oauth_client":[],"api_key":[{"current_key":"AIzaDummyKey1234567890"}],"services":{"appinvite_service":{"other_platform_oauth_client":[]}}}],"configuration_version":"1"}' > app/google-services.json
-          ls -l debug.keystore app/
-
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> local.properties
+          ls -l local.properties
       - run: gradle assembleDebug --no-daemon
       - uses: actions/upload-artifact@v5
         with:
-          name: JARVIS-APK
+          name: JARVIS-APK-FINAL
           path: app/build/outputs/apk/debug/*.apk
