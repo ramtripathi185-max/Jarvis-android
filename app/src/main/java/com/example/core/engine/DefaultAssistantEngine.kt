@@ -10,6 +10,7 @@ import com.example.core.model.LanguageOption
 import com.example.core.model.Message
 import com.example.core.model.MessageSender
 import com.example.core.voice.VoiceEngine
+import com.example.core.call.IncomingCallManager
 import com.example.data.preferences.JarvisPreferences
 import com.example.data.service.GeminiService
 import kotlinx.coroutines.CoroutineScope
@@ -93,6 +94,16 @@ class DefaultAssistantEngine(
     override suspend fun processUserInput(input: String, isVoice: Boolean) {
         val trimmed = input.trim()
         if (trimmed.isEmpty()) return
+        // Handle incoming call voice commands first
+    if (IncomingCallManager.isCallActive) {
+        val handled = IncomingCallManager.handleVoiceCommand(trimmed)
+        if (handled) {
+            val response = if (trimmed.lowercase().contains("kaat") || trimmed.lowercase().contains("reject") || trimmed.lowercase().contains("cut") || trimmed.lowercase().contains("cancel") || trimmed.lowercase().contains("nahi")) "Call kaat diya." else "Call utha liya."
+            conversationManager.recordAssistantMessage(response)
+            speakOrIdle(response, isVoice)
+            return
+        }
+    }
 
         // Check if there is an active pending action awaiting confirmation
         val currentPending = actionManager.pendingAction.value
