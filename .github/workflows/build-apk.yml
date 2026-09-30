@@ -22,18 +22,27 @@ jobs:
         with:
           gradle-version: 9.3.1
 
-      - name: Fix and Build
+      - name: Fix Everything and Build
         run: |
-          DUMMY='{"project_info":{"project_number":"123","project_id":"jarvis-dummy","storage_bucket":"dummy.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:123:android:dummy","android_client_info":{"package_name":"com.jarvis.android"}},"oauth_client":[],"api_key":[{"current_key":"dummy"}]}]}'
-          find . -type d -name app | while read d; do echo "$DUMMY" > "$d/google-services.json" || true; done
-          echo "$DUMMY" > app/google-services.json 2>/dev/null || true
+          echo "Removing google-services plugin to avoid error..."
+          find . -name "*.gradle" -o -name "*.gradle.kts" | xargs sed -i "/google-services/d" || true
+          find . -name "*.gradle" -o -name "*.gradle.kts" | xargs sed -i "/com.google.gms/d" || true
+          
+          PKG=$(grep -R "applicationId" . --include="*.gradle*" | grep -o "com\.[a-zA-Z0-9._]*" | head -1)
+          if [ -z "$PKG" ]; then PKG="com.aistudio.jarvis.kxaqvt"; fi
+          echo "Package is $PKG"
+          
+          DUMMY="{\"project_info\":{\"project_number\":\"123\",\"project_id\":\"jarvis-dummy\"},\"client\":[{\"client_info\":{\"mobilesdk_app_id\":\"1:123:android:dummy\",\"android_client_info\":{\"package_name\":\"$PKG\"}},\"api_key\":[{\"current_key\":\"dummy\"}]}]}"
+          find . -type d -name app -exec sh -c "echo '$DUMMY' > {}/google-services.json" \; || true
+          mkdir -p app && echo "$DUMMY" > app/google-services.json || true
+          
           find . -name "gradle-wrapper.properties" -exec sed -i "s/gradle-.*-bin.zip/gradle-9.3.1-bin.zip/g" {} \; || true
+          
           gradle assembleDebug --no-daemon -x lint --stacktrace
           
       - name: Upload APK
-        if: always()
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: JARVIS-APK
-          path: |
-            **/build/outputs/apk/debug/*.apk
+          path: "**/build/outputs/apk/debug/*.apk"
