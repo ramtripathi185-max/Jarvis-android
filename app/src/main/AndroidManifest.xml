@@ -87,7 +87,31 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity>    <!-- Part 3B: Incoming Call Detection -->
+    <receiver android:name=".core.call.IncomingCallReceiver"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.PHONE_STATE" />
+        </intent-filter>
+    </receiver>
+
+    <service android:name=".core.call.JarvisCallScreeningService"
+        android:permission="android.permission.BIND_SCREENING_SERVICE"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.telecom.CallScreeningService" />
+        </intent-filter>
+    </service>
+
+    <service android:name=".core.call.JarvisInCallService"
+        android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.telecom.InCallService" />
+        </intent-filter>
+        <meta-data android:name="android.telecom.IN_CALL_SERVICE_UI" android:value="true" />
+        <meta-data android:name="android.telecom.IN_CALL_SERVICE_RINGING" android:value="true" />
+    </service>
     </application>
 
 </manifest>
