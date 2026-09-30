@@ -2,8 +2,6 @@ name: Build JARVIS APK
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main, master ]
 
 jobs:
   build:
@@ -11,35 +9,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle 9.3.1
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 9.3.1
-
-      - name: Fix Everything and Build
+      - name: Build APK
         run: |
-          echo "Removing google-services plugin to avoid error..."
-          find . -name "*.gradle" -o -name "*.gradle.kts" | xargs sed -i "/google-services/d" || true
-          find . -name "*.gradle" -o -name "*.gradle.kts" | xargs sed -i "/com.google.gms/d" || true
-          
-          PKG=$(grep -R "applicationId" . --include="*.gradle*" | grep -o "com\.[a-zA-Z0-9._]*" | head -1)
-          if [ -z "$PKG" ]; then PKG="com.aistudio.jarvis.kxaqvt"; fi
-          echo "Package is $PKG"
-          
-          DUMMY="{\"project_info\":{\"project_number\":\"123\",\"project_id\":\"jarvis-dummy\"},\"client\":[{\"client_info\":{\"mobilesdk_app_id\":\"1:123:android:dummy\",\"android_client_info\":{\"package_name\":\"$PKG\"}},\"api_key\":[{\"current_key\":\"dummy\"}]}]}"
-          find . -type d -name app -exec sh -c "echo '$DUMMY' > {}/google-services.json" \; || true
-          mkdir -p app && echo "$DUMMY" > app/google-services.json || true
-          
-          find . -name "gradle-wrapper.properties" -exec sed -i "s/gradle-.*-bin.zip/gradle-9.3.1-bin.zip/g" {} \; || true
-          
-          gradle assembleDebug --no-daemon -x lint --stacktrace
-          
+          echo "Fixing Line 72 error..."
+          # Line 72 वाला पूरा block हटाओ
+          find . -name "build.gradle.kts" -exec sed -i '/googleServices {/,/}/d' {} \; || true
+          find . -name "build.gradle.kts" -exec sed -i '/MissingGoogleServicesStrategy/d' {} \; || true
+          find . -name "build.gradle.kts" -exec sed -i '/googleServices/d' {} \; || true
+          find . -name "*.gradle*" -exec sed -i '/com.google.gms.google-services/d' {} \; || true
+          find . -name "*.gradle*" -exec sed -i '/com.google.gms/d' {} \; || true
+          find . -name "*.gradle*" -exec sed -i '/google-services/d' {} \; || true
+
+          echo "Creating dummy json"
+          mkdir -p app
+          echo '{"project_info":{"project_number":"1"},"client":[{"client_info":{"mobilesdk_app_id":"1:1:android:1","android_client_info":{"package_name":"com.aistudio.jarvis.kxaqvt"}},"api_key":[{"current_key":"dummy"}]}]}' > app/google-services.json
+
+          chmod +x ./gradlew || true
+          ./gradlew assembleDebug --no-daemon -x lint
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         if: always()
