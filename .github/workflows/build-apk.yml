@@ -1,9 +1,9 @@
-name: Build JARVIS APK
+name: Build JARVIS APK FINAL
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main, master ]
-  workflow_dispatch:
 
 jobs:
   build:
@@ -16,24 +16,46 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
 
-      - name: Create Debug Keystore
+      - name: Fix Project & Create Dummy Files
         run: |
-          keytool -genkey -v -keystore app/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US" || true
+          # असली app folder ढूंढो
+          APP_GRADLE=$(find . -name "build.gradle*" | grep "app/build.gradle" | head -1)
+          ROOT_DIR=$(dirname $(dirname $APP_GRADLE))
+          if [ -z "$ROOT_DIR" ] || [ "$ROOT_DIR" = "." ]; then ROOT_DIR="."; fi
+          echo "ROOT_DIR=$ROOT_DIR" >> $GITHUB_ENV
+          echo "Found project at: $ROOT_DIR"
+          ls -la $ROOT_DIR
+          
+          # Dummy google-services.json बनाओ - इसी की वजह से fail हो रहा था
+          DUMMY='{"project_info":{"project_number":"123","project_id":"jarvis-dummy","storage_bucket":"dummy.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:123:android:dummy","android_client_info":{"package_name":"com.jarvis.android"}},"oauth_client":[],"api_key":[{"current_key":"dummy"}],"services":{}}],"configuration_version":"1"}'
+          
+          echo $DUMMY > $ROOT_DIR/app/google-services.json
+          echo $DUMMY > $ROOT_DIR/google-services.json
+          mkdir -p $ROOT_DIR/app/src/debug/
+          echo $DUMMY > $ROOT_DIR/app/src/debug/google-services.json
+          mkdir -p ~/.android
+          keytool -genkey -v -keystore $ROOT_DIR/app/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US" || true
           keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US" || true
+          mkdir -p $ROOT_DIR/Jarvis-android/app/
+          echo $DUMMY > $ROOT_DIR/Jarvis-android/app/google-services.json || true
+
+      - name: Build with Gradle 8.7
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.7
 
       - name: Build APK
         run: |
-          chmod +x ./gradlew || chmod +x ./app/gradlew || true
-          if [ -f "./gradlew" ]; then ./gradlew assembleDebug --stacktrace; else gradle assembleDebug --stacktrace; fi
-        
+          cd ${{ env.ROOT_DIR }}
+          chmod +x gradlew || true
+          ./gradlew assembleDebug --stacktrace --no-daemon || gradle assembleDebug --stacktrace --no-daemon
+
       - name: Upload APK
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: JARVIS-APK
           path: |
-            app/build/outputs/apk/debug/*.apk
             **/build/outputs/apk/debug/*.apk
+            **/app/build/outputs/apk/debug/*.apk
