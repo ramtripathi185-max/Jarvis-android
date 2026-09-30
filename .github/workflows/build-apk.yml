@@ -13,11 +13,9 @@ jobs:
       - name: Create google-services.json
         run: |
           mkdir -p app
-          echo '{"project_info":{"project_number":"1"},"client":[{"client_info":{"mobilesdk_app_id":"1:1:android:1","android_client_info":{"package_name":"com.aistudio.jarvis.kxaqvt"}},"api_key":[{"current_key":"dummy"}]}]}' > app/google-services.json
-      - name: Build APK
-        run: gradle assembleDebug --no-daemon --stacktrace
-      - name: Upload APK
-        uses: actions/upload-artifact@v5
+          echo '{"project_info":{"project_number":"1234567890","project_id":"jarvis-dummy","storage_bucket":"jarvis-dummy.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:1234567890:android:abc123","android_client_info":{"package_name":"com.aistudio.jarvis.kxaqvt"}},"oauth_client":[],"api_key":[{"current_key":"AIzaDummyKey1234567890"}],"services":{"appinvite_service":{"other_platform_oauth_client":[]}}}],"configuration_version":"1"}' > app/google-services.json
+      - run: gradle assembleDebug --no-daemon --stacktrace
+      - uses: actions/upload-artifact@v5
         with:
           name: JARVIS-APK
           path: app/build/outputs/apk/debug/*.apk
