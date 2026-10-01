@@ -136,10 +136,9 @@ class GeminiServiceImpl(
                 } else {
                     Result.failure(Exception("Gemini returned an empty response candidate."))
                 }
-            } else {
-                val errorCode = response.code()
-                val errorBody = response.errorBody()?.string()
-                Log.e(tag, "Gemini API HTTP Error $errorCode: $errorBody")
+                    val errorCode = response.code
+        val errorBody = response.message
+        Log.e(tag, "Gemini API HTTP Error $errorCode: $errorBody")
 
                 val friendlyMessage = when (errorCode) {
                     400 -> "Request format was invalid ($errorCode)."
