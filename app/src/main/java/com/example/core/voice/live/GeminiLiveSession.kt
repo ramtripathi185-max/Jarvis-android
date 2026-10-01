@@ -2,7 +2,7 @@ package com.example.core.voice.live
 
 import android.util.Base64
 import android.util.Log
-import com.example.BuildConfig
+ import com.aistudio.jarvis.kxaqvt.BuildConfig
 import com.example.core.model.LanguageOption
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
