@@ -11,8 +11,8 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.example.MainActivity
-import com.example.R
+  import com.aistudio.jarvis.kxaqvt.MainActivity
+  import com.aistudio.jarvis.kxaqvt.R
 import com.example.core.voice.entry.VoiceEntryActivity
 
 /**
