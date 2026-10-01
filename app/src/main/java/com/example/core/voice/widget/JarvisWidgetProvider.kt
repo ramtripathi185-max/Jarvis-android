@@ -7,8 +7,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import com.example.MainActivity
-import com.example.R
+import com.aistudio.jarvis.kxaqvt.MainActivity
+import com.aistudio.jarvis.kxaqvt.R
 import com.example.core.voice.entry.VoiceEntryActivity
 
 /**
