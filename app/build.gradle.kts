@@ -18,27 +18,21 @@ val geminiKey = localProperties.getProperty("GEMINI_API_KEY") ?: System.getenv("
 android {
     namespace = "com.aistudio.jarvis.kxaqvt"
     compileSdk = 34
-
     defaultConfig {
         applicationId = "com.aistudio.jarvis.kxaqvt"
         minSdk = 24
         targetSdk = 34
-        versionCode = 5
+        versionCode = 6
         versionName = "1.1"
         buildConfigField("String", "GEMINI_API_KEY", "\"$geminiKey\"")
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
     buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
+        release { isMinifyEnabled = false }
     }
-
     buildFeatures {
         compose = true
         buildConfig = true
@@ -63,4 +57,12 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:23.0.0")
     implementation("com.google.ai.client.generativeai:generativeai:0.6.0")
     implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // ये नई लाइनें जो अभी error ठीक करेंगी
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.moshi:moshi:1.15.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 }
