@@ -3,7 +3,9 @@ import java.io.FileInputStream
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.secrets)
+    alias(libs.plugins.google.services)
 }
 
 val localProperties = Properties()
@@ -21,7 +23,7 @@ android {
         applicationId = "com.aistudio.jarvis.kxaqvt"
         minSdk = 24
         targetSdk = 34
-        versionCode = 4
+        versionCode = 5
         versionName = "1.1"
         buildConfigField("String", "GEMINI_API_KEY", "\"$geminiKey\"")
     }
@@ -32,15 +34,14 @@ android {
     }
 
     buildTypes {
-        release { isMinifyEnabled = false }
+        release {
+            isMinifyEnabled = false
+        }
     }
 
     buildFeatures {
         compose = true
         buildConfig = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
     }
 }
 
@@ -53,5 +54,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth)
     implementation("com.google.ai.client.generativeai:generativeai:0.6.0")
 }
