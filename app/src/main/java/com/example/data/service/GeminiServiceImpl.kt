@@ -134,10 +134,10 @@ class GeminiServiceImpl(
                 if (!candidateText.isNullOrBlank()) {
                     Result.success(candidateText.trim())
                 } else {
-                    Result.failure(Exception("Gemini returned an empty response candidate."))
+                    Result.failure<String>(Exception("Gemini returned an empty response candidate."))
                 }
                     val errorCode = response.code
-        val errorBody = response.message
+        val errorBody = response.message()
         Log.e(tag, "Gemini API HTTP Error $errorCode: $errorBody")
 
                 val friendlyMessage = when (errorCode) {
@@ -147,17 +147,17 @@ class GeminiServiceImpl(
                     500, 503 -> "Google Gemini service is temporarily unavailable. Please retry shortly."
                     else -> "Gemini API error ($errorCode)."
                 }
-                Result.failure(Exception(friendlyMessage))
+                Result.failure<String>(Exception(friendlyMessage))
             }
         } catch (e: UnknownHostException) {
             Log.e(tag, "Network unavailable", e)
-            Result.failure(IOException("No network connection. Please check your internet connection.", e))
+            Result.failure<String>(IOException("No network connection. Please check your internet connection.", e))
         } catch (e: SocketTimeoutException) {
             Log.e(tag, "Network timeout", e)
-            Result.failure(IOException("Connection to Gemini timed out. Please try again.", e))
+            Result.failure<String>(IOException("Connection to Gemini timed out. Please try again.", e))
         } catch (e: Exception) {
             Log.e(tag, "Unexpected error calling Gemini API", e)
-            Result.failure(e)
+            Result.failure<String>(e)
         }
     }
 }
