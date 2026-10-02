@@ -11,16 +11,9 @@ import com.aistudio.jarvis.kxaqvt.MainActivity
 import com.aistudio.jarvis.kxaqvt.R
 import com.example.core.voice.entry.VoiceEntryActivity
 
-/**
- * Android AppWidgetProvider delivering instant 1-tap voice entry from the Home Screen.
- */
 class JarvisWidgetProvider : AppWidgetProvider() {
 
-    override fun onUpdate(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray
-    ) {
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
@@ -37,36 +30,24 @@ class JarvisWidgetProvider : AppWidgetProvider() {
     }
 
     companion object {
-        const val ACTION_WIDGET_MIC_CLICK = "com.example.action.WIDGET_MIC_CLICK"
+        const val ACTION_WIDGET_MIC_CLICK = "com.example.ACTION_WIDGET_MIC_CLICK"
 
-        fun updateAppWidget(
-            context: Context,
-            appWidgetManager: AppWidgetManager,
-            appWidgetId: Int
-        ) {
-            val views = RemoteViews(context.packageName, R.layout.jarvis_widget)
+        fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+            val views = RemoteViews(context.packageName, R.layout.widget_jarvis)
 
-            // 1. Tapping the widget body opens MainActivity (full HUD)
-            val openAppIntent = Intent(context, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            }
+            val openAppIntent = Intent(context, MainActivity::class.java)
             val pendingOpenApp = PendingIntent.getActivity(
-                context,
-                100,
-                openAppIntent,
+                context, 0, openAppIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.widget_text_container, pendingOpenApp)
             views.setOnClickPendingIntent(R.id.widget_app_icon, pendingOpenApp)
 
-            // 2. Tapping the microphone button launches the floating VoiceEntryActivity
             val voiceEntryIntent = Intent(context, VoiceEntryActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
             val pendingVoiceEntry = PendingIntent.getActivity(
-                context,
-                101,
-                voiceEntryIntent,
+                context, 101, voiceEntryIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.widget_mic_button, pendingVoiceEntry)
