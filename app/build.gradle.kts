@@ -35,10 +35,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -48,6 +44,13 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+}
+
+// Correct Kotlin compiler configuration block
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
@@ -61,7 +64,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.activity:activity-compose:1.8.2")
 
-    // Room Database Dependencies (Fixes KSP signature bug in Kotlin 2.0+)
+    // Room Database Dependencies
     val room_version = "2.7.0-beta01"
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
