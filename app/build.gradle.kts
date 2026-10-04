@@ -1,6 +1,5 @@
 import java.util.Properties
 import java.io.FileInputStream
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
@@ -47,11 +46,8 @@ android {
     }
 }
 
-// Correct Kotlin compiler configuration block
 kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
-    }
+    jvmToolchain(17)
 }
 
 dependencies {
@@ -65,7 +61,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.8.2")
 
     // Room Database Dependencies
-    val room_version = "2.7.0-beta01"
+    val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
