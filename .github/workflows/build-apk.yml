@@ -21,6 +21,9 @@ jobs:
           echo '{"project_info":{"project_number":"1234567890","project_id":"jarvis-dummy","storage_bucket":"jarvis-dummy.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:1234567890:android:abc123","android_client_info":{"package_name":"com.aistudio.jarvis.kxaqvt"}},"oauth_client":[],"api_key":[{"current_key":"AIzaDummyKey1234567890"}],"services":{"appinvite_service":{"other_platform_oauth_client":[]}}}],"configuration_version":"1"}' > app/google-services.json
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> local.properties
           ls -l local.properties
+      - name: Add Extended Icons Dependency
+        run: |
+          echo "dependencies { implementation('androidx.compose.material:material-icons-extended:1.6.8') }" >> app/build.gradle.kts || echo "dependencies { implementation 'androidx.compose.material:material-icons-extended:1.6.8' }" >> app/build.gradle
       - name: Build APK
         run: gradle assembleDebug --no-daemon --no-build-cache
       - uses: actions/upload-artifact@v5
