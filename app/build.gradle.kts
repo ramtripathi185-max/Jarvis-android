@@ -46,7 +46,8 @@ android {
     }
 }
 
-dependencies {
+dependencies {implementation("androidx.compose.material:material-icons-extended:1.6.8")
+
     // Jetpack Compose
     val composeBom = platform("androidx.compose:compose-bom:2024.02.00")
     implementation(composeBom)
