@@ -23,7 +23,7 @@ jobs:
           ls -l local.properties
       - name: Add Extended Icons Dependency
         run: |
-          echo "dependencies { implementation('androidx.compose.material:material-icons-extended:1.6.8') }" >> app/build.gradle.kts || echo "dependencies { implementation 'androidx.compose.material:material-icons-extended:1.6.8' }" >> app/build.gradle
+          echo 'dependencies { implementation("androidx.compose.material:material-icons-extended:1.6.8") }' >> app/build.gradle.kts
       - name: Build APK
         run: gradle assembleDebug --no-daemon --no-build-cache
       - uses: actions/upload-artifact@v5
