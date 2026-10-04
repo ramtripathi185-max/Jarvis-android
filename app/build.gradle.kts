@@ -34,6 +34,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    kotlinOptions {
+        jvmTarget = "17"
+        freeCompilerArgs += listOf(
+            "-Xjvm-default=all"
+        )
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -56,8 +63,8 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.activity:activity-compose:1.8.2")
 
-    // Room Database Dependencies (Updated Room Version to fix JVM Signature issue)
-    val room_version = "2.7.0-alpha01"
+    // Room Database Dependencies
+    val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
