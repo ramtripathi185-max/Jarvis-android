@@ -1,14 +1,4 @@
 package com.example.ui.screens.settings
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Psychology
-import androidx.compose.material.icons.filled.RecordVoiceOver
-import androidx.compose.material.icons.filled.Speed
-import androidx.compose.material.icons.filled.Tune
-import androidx.compose.material.icons.filled.Key
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.VolumeUp
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -72,7 +62,6 @@ import com.example.ui.theme.CyberBorder
 import com.example.ui.theme.CyberCardDark
 import com.example.ui.theme.CyberCyan
 import com.example.ui.theme.CyberDarkNavy
-import com.example.ui.theme.CyberError
 import com.example.ui.theme.CyberSurfaceDark
 import com.example.ui.theme.CyberWarning
 import com.example.ui.theme.TextMuted
@@ -206,7 +195,7 @@ fun SettingsScreen(
             border = BorderStroke(1.dp, CyberBorder)
         ) {
             Column(modifier = Modifier.padding(12.dp)) {
-                LanguageOption.values().forEach { lang ->
+                LanguageOption.entries.forEach { lang ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -388,7 +377,6 @@ fun SettingsScreen(
             border = BorderStroke(1.dp, CyberBorder)
         ) {
             Column(modifier = Modifier.padding(14.dp)) {
-                // Auto-speak toggle
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -419,7 +407,6 @@ fun SettingsScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Speech Rate Slider
                 Text(
                     text = "Speech Rate: ${String.format("%.1fx", speechRate)}",
                     color = TextPrimary,
@@ -437,7 +424,6 @@ fun SettingsScreen(
                     )
                 )
 
-                // Pitch Slider
                 Text(
                     text = "Vocal Pitch: ${String.format("%.1fx", pitch)}",
                     color = TextPrimary,
@@ -457,7 +443,6 @@ fun SettingsScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Test Voice Button
                 Button(
                     onClick = { viewModel.testTtsVoice() },
                     modifier = Modifier
@@ -547,7 +532,6 @@ fun SettingsScreen(
             border = BorderStroke(1.dp, CyberCyan.copy(alpha = 0.5f))
         ) {
             Column(modifier = Modifier.padding(14.dp)) {
-                // Quick Settings Tile Info
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.Notifications,
@@ -574,7 +558,6 @@ fun SettingsScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Home-Screen Widget Info
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.Home,
@@ -601,7 +584,6 @@ fun SettingsScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Wake-Word Architecture Card
                 Surface(
                     shape = RoundedCornerShape(10.dp),
                     color = CyberSurfaceDark,
