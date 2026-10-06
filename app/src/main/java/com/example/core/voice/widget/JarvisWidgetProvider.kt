@@ -6,7 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import com.example.jarvis.MainActivity
+import com.aistudio.jarvis.kxaqvt.MainActivity
 import com.aistudio.jarvis.kxaqvt.R
 
 class JarvisWidgetProvider : AppWidgetProvider() {
