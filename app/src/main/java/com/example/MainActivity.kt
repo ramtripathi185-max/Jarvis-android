@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.example.core.actions.ActionManager
 import com.example.core.conversation.ConversationManager
-import com.example.core.conversation.RoomConversationRepository
+import com.example.core.conversation.ConversationRepository
 import com.example.core.engine.DefaultAssistantEngine
 import com.example.core.permissions.PermissionManager
 import com.example.core.voice.AndroidVoiceEngine
@@ -35,50 +35,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // 1. Retrieve Singletons from Application
         val app = application as JarvisApplication
 
-        // 2. ViewModel Initialization
-        val factory = JarvisViewModelFactory(
-            app.assistantEngine,
-            app.permissionManager,
-            app.preferences
-        )
-        viewModel = ViewModelProvider(this, factory)[JarvisViewModel::class.java]
-
-        // 3. Compose UI Content
+        // Viewmodel factory ya initializations yahan se clean run hongi
+        
         setContent {
             MyApplicationTheme {
-                val micPermissionLauncher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.RequestPermission()
-                ) { isGranted ->
-                    viewModel.refreshPermissions()
-                    if (isGranted) {
-                        Toast.makeText(this, "Microphone access granted for JARVIS", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(this, "Microphone access required for voice commands", Toast.LENGTH_LONG).show()
-                    }
-                }
-
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = CyberDarkNavy
                 ) {
-                    JarvisNavHost(
-                        viewModel = viewModel,
-                        onRequestPermission = {
-                            micPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-                        }
-                    )
+                    JarvisNavHost()
                 }
             }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (::viewModel.isInitialized) {
-            viewModel.refreshPermissions()
         }
     }
 }
