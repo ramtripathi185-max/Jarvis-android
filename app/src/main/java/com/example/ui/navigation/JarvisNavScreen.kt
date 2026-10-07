@@ -30,19 +30,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ui.screens.conversation.ConversationScreen
-import com.example.ui.screens.hud.HudScreen
-import com.example.ui.screens.permissions.PermissionsScreen
 import com.example.ui.screens.settings.SettingsScreen
-import com.example.ui.theme.CyberAccentNeon
 import com.example.ui.theme.CyberBorder
 import com.example.ui.theme.CyberCyan
 import com.example.ui.theme.CyberDarkNavy
 import com.example.ui.theme.CyberSurfaceDark
 import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.viewmodel.JarvisViewModel
-import kotlinx.coroutines.launch
 
 enum class JarvisTab(val title: String, val icon: ImageVector, val tag: String) {
     HUD("HUD", Icons.Default.RadioButtonChecked, "nav_tab_hud"),
@@ -53,15 +46,11 @@ enum class JarvisTab(val title: String, val icon: ImageVector, val tag: String) 
 
 @Composable
 fun JarvisNavHost(
-    viewModel: JarvisViewModel,
-    onRequestPermission: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedTab by remember { mutableStateOf(JarvisTab.HUD) }
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
 
-    // Handle back press if not on HUD
     BackHandler(enabled = selectedTab != JarvisTab.HUD) {
         selectedTab = JarvisTab.HUD
     }
@@ -113,28 +102,12 @@ fun JarvisNavHost(
                 .padding(innerPadding)
         ) {
             when (selectedTab) {
-                JarvisTab.HUD -> HudScreen(
-                    viewModel = viewModel,
-                    onRequestPermission = onRequestPermission,
-                    onShowSnackbar = { msg ->
-                        scope.launch { snackbarHostState.showSnackbar(msg) }
-                    }
-                )
-                JarvisTab.CONVERSATION -> ConversationScreen(
-                    viewModel = viewModel,
-                    onRequestPermission = onRequestPermission,
-                    onShowSnackbar = { msg ->
-                        scope.launch { snackbarHostState.showSnackbar(msg) }
-                    }
-                )
-                JarvisTab.PERMISSIONS -> PermissionsScreen(
-                    viewModel = viewModel,
-                    onRequestPermission = onRequestPermission
-                )
-                JarvisTab.SETTINGS -> SettingsScreen(
-                    viewModel = viewModel
-                )
+                JarvisTab.HUD -> Text(text = "HUD Screen", color = CyberCyan)
+                JarvisTab.CONVERSATION -> Text(text = "Conversation Screen", color = CyberCyan)
+                JarvisTab.PERMISSIONS -> Text(text = "Permissions Screen", color = CyberCyan)
+                JarvisTab.SETTINGS -> SettingsScreen()
             }
         }
     }
 }
+
