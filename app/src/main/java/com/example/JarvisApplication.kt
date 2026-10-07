@@ -20,6 +20,16 @@ class JarvisApplication : Application() {
 
     lateinit var conversationRepository: ConversationRepository
         private set
-    
-    // ... baaki poora code same rehne do ...
-    
+
+    override fun onCreate() {
+        super.onCreate()
+        
+        database = androidx.room.Room.databaseBuilder(
+            applicationContext,
+            JarvisDatabase::class.java,
+            "jarvis_db"
+        ).build()
+
+        conversationRepository = ConversationRepository()
+    }
+}
