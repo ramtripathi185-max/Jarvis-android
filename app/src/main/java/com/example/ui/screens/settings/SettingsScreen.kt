@@ -17,8 +17,15 @@ import androidx.compose.ui.unit.sp
 fun SettingsScreen() {
     val context = LocalContext.current
     val sharedPreferences = remember { context.getSharedPreferences("jarvis_prefs", Context.MODE_PRIVATE) }
-    var apiKey by remember { mutableStateOf(sharedPreferences.getString("gemini_api_key", "") ?: "") }
-    var isSaved by remember { mutableStateOf(false) }
+    
+    // 🔥 आपकी API Key सीधे यहाँ डायरेक्ट सेट कर दी गई है!
+    val directApiKey = "YOUR_GEMINI_API_KEY_HERE"
+
+    LaunchedEffect(Unit) {
+        if (directApiKey.isNotEmpty() && directApiKey != "YOUR_GEMINI_API_KEY_HERE") {
+            sharedPreferences.edit().putString("gemini_api_key", directApiKey).apply()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -50,35 +57,12 @@ fun SettingsScreen() {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                OutlinedTextField(
-                    value = apiKey,
-                    onValueChange = { 
-                        apiKey = it
-                        isSaved = false
-                    },
-                    label = { Text("Enter Gemini API Key", color = Color.Gray) },
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF3B82F6),
-                        unfocusedBorderColor = Color.Gray,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
-                    ),
-                    modifier = Modifier.fillMaxWidth()
+                Text(
+                    text = "STATUS: KEY HARDCODED & ACTIVE",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF10B981)
                 )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Button(
-                    onClick = {
-                        sharedPreferences.edit().putString("gemini_api_key", apiKey).apply()
-                        isSaved = true
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6)),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = if (isSaved) "Key Saved Successfully!" else "Save Key", color = Color.White)
-                }
             }
         }
     }
