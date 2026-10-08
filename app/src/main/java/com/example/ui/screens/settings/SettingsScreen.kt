@@ -12,17 +12,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.BuildConfig
 
 @Composable
 fun SettingsScreen() {
     val context = LocalContext.current
     val sharedPreferences = remember { context.getSharedPreferences("jarvis_prefs", Context.MODE_PRIVATE) }
-    
-    // Check if key is coming from BuildConfig or SharedPreferences
-    val buildConfigKey = try { BuildConfig::class.java.getField("GEMINI_API_KEY").get(null) as? String } catch (e: Exception) { null }
-    val savedKey = sharedPreferences.getString("gemini_api_key", "") ?: ""
-    val activeKey = if (!buildConfigKey.isNull_or_Empty()) buildConfigKey else savedKey
+    var apiKey by remember { mutableStateOf(sharedPreferences.getString("gemini_api_key", "") ?: "") }
+    var isSaved by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -54,24 +50,36 @@ fun SettingsScreen() {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                if (activeKey.isNotEmpty()) {
-                    Text(
-                        text = "STATUS: KEY ACTIVE & CONFIGURED",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF10B981)
-                    )
-                } else {
-                    Text(
-                        text = "STATUS: KEY NEEDED",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFFEF4444)
-                    )
+                OutlinedTextField(
+                    value = apiKey,
+                    onValueChange = { 
+                        apiKey = it
+                        isSaved = false
+                    },
+                    label = { Text("Enter Gemini API Key", color = Color.Gray) },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFF3B82F6),
+                        unfocusedBorderColor = Color.Gray,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Button(
+                    onClick = {
+                        sharedPreferences.edit().putString("gemini_api_key", apiKey).apply()
+                        isSaved = true
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = if (isSaved) "Key Saved Successfully!" else "Save Key", color = Color.White)
                 }
             }
         }
     }
 }
-
-private fun String?.isNull_or_Empty(): Boolean = this == null || this.isEmpty()
