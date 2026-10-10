@@ -18,12 +18,12 @@ fun SettingsScreen() {
     val context = LocalContext.current
     val sharedPreferences = remember { context.getSharedPreferences("jarvis_prefs", Context.MODE_PRIVATE) }
     
-    // 🔥 आपकी Gemini API Key यहाँ हार्डकोड कर दी गई है
-    val directApiKey = "YOUR_GEMINI_API_KEY_HERE"
+    // 🔥 यहाँ अपनी असली Gemini API Key लिख दें (उद्धरण चिन्ह ' ' के अंदर)
+    val myApiKey = "YOUR_GEMINI_API_KEY_HERE"
 
     LaunchedEffect(Unit) {
-        if (directApiKey.isNotEmpty() && directApiKey != "YOUR_GEMINI_API_KEY_HERE") {
-            sharedPreferences.edit().putString("gemini_api_key", directApiKey).apply()
+        if (myApiKey.isNotEmpty() && myApiKey != "YOUR_GEMINI_API_KEY_HERE") {
+            sharedPreferences.edit().putString("gemini_api_key", myApiKey).apply()
         }
     }
 
@@ -58,7 +58,7 @@ fun SettingsScreen() {
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    text = "STATUS: KEY ACTIVE & SAVED",
+                    text = "STATUS: KEY ACTIVE & CONFIGURED",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF10B981)
